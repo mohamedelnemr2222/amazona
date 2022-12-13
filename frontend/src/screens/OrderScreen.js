@@ -27,7 +27,9 @@ function reducer(state, action) {
     case "PAY_SUCCESS":
       return { ...state, loadingPay: false, successPay: true };
     case "PAY_FAIL":
-      return { ...state, loadingPay: false, errorPay: action.payload };
+      return { ...state, loadingPay: false };
+    case "PAY_RESET":
+      return { ...state, loadingPay: false, successPay: false };
 
     default:
       return state;
@@ -74,11 +76,10 @@ export default function OrderScreen() {
           `/api/orders/${order._id}/pay`,
           details,
           {
-            headers: { authorization: `Bearer ${userInfo.tokem}` },
+            headers: { authorization: `Bearer ${userInfo.token}` },
           }
         );
         dispatch({ type: "PAY_SUCCESS", payload: data });
-
         toast.success("Order is paid");
       } catch (err) {
         dispatch({ type: "PAY_FAIL", payload: getError(err) });
